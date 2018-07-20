@@ -9,8 +9,8 @@ class PCA:
         num_rows, num_cols = X.shape
 
         # Center data.
-        for i in range(num_cols):
-            X[:, i] -= X[:, i].mean()
+        self.means = X.mean(axis=0)
+        X = self.center(X)
 
         eigvals, eigvecs = np.linalg.eig(np.dot(X.T, X))
 
@@ -22,8 +22,11 @@ class PCA:
 
         self.W = eigvecs[:, :self.num_bits]
 
+    def center(self, X):
+        return X - self.means
+
     def transform(self, X):
-        return np.dot(X, self.W)
+        return np.dot(self.center(X), self.W)
 
     def fit_transform(self, X):
         self.fit(X)
